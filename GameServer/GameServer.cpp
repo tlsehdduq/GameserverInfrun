@@ -7,54 +7,30 @@
 #include<mutex>
 #include<windows.h>
 #include<future>
+// Thread local storage
 
-//가시성 , 코드 재배치 
-int32 x = 0;
-int32 y = 0;
-int32 r1 = 0;
-int32 r2= 0;
+thread_local int32 LThreadID = 0;
 
-volatile bool ready;
+void ThreadMain(int32 threadID) {
+	LThreadID = threadID;
 
-void Thread_t1()
-{
-	while (!ready)
-		;
-	y = 1; //Store y
-	r1 = x; // Load x
+	while (true)
+	{
+		cout << " Hi ! I am Thread " << LThreadID << endl;
 
+		this_thread::sleep_for(1s);
+	}
 }
-
-void Thread_t2()
-{
-	while (!ready)
-		;
-	x = 1; // Store x
-	r2 = y; // Load y
-}
-
 
 int main()
 {
-	int32 count = 0;
-	while (true)
+	vector<thread> threads;
+
+	for (int32 i = 0; i < 10; ++i)
 	{
-		ready = false;
-		count++;
-
-		x = y = r1 = r2 = 0;
-		thread t1(Thread_t1);
-		thread t2(Thread_t2);
-
-		ready = true;
-
-		t1.join();
-		t2.join();
-
-		if (r1 == 0 && r2 == 0)
-			break;
+		int32 threadID = i + 1;
+		threads.push_back(thread(ThreadMain, threadID));
 	}
-	cout << count << " 번 만에 빠져나옴 " << endl;
-
-
+	for (thread& t : threads)
+		t.join();
 }
