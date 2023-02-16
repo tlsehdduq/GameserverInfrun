@@ -1,2 +1,4 @@
-﻿  GameServer.cpp
-  GameServer.vcxproj -> C:\Users\tlseh\Desktop\GameserverInfrun\Binary\Debug\GameServer.exe
+﻿  pch.cpp
+C:\Users\tlseh\Desktop\GameserverInfrun\ServerCore\CoreMacro.h(15,2): error C2447: '{': 함수 헤더가 없습니다. 이전 스타일의 형식 목록입니까?
+C:\Users\tlseh\Desktop\GameserverInfrun\ServerCore\CoreMacro.h(19,1): error C2059: 구문 오류: '}'
+C:\Users\tlseh\Desktop\GameserverInfrun\ServerCore\CoreMacro.h(19,1): error C2143: 구문 오류: ';'이(가) '}' 앞에 없습니다.

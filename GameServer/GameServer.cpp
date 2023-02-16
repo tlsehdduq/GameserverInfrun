@@ -11,38 +11,10 @@
 
 #include "ConcurrentQueue.h"
 #include "ConcurrentStack.h"
-
-LockQueue<int32> q;
-LockFreeStack<int32> s;
-
-default_random_engine dre;
-uniform_int_distribution<int32> uie;
-
-void Push() {
-	while (true) {
-		int32 value = uie(dre);
-		s.Push(value);
-
-		this_thread::sleep_for(10ms);
-	}
-}
-
-void Pop()
-{
-	while (true) {
-		int32 data = 0;
-		if (s.TryPop(OUT data))
-			cout << data << endl;
-	}
-}
+#include"CoreMacro.h"
 
 int main()
 {
-	thread t1(Push);
-	thread t2(Pop);
-	thread t3(Pop);
-	t1.join();
-	t2.join();
-	t3.join();
-
+	int32 a = 0; 
+	ASSERT_CRASH(a != 3);
 }
