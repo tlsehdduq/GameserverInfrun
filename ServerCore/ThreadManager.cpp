@@ -1,14 +1,18 @@
 #include "pch.h"
 #include "ThreadManager.h"
-#include"CoreTLS.h"
-#include"CoreGlobal.h"
+#include "CoreTLS.h"
+#include "CoreGlobal.h"
+
+/*------------------
+	ThreadManager
+-------------------*/
 
 ThreadManager::ThreadManager()
 {
-	//Main Thread
+	// Main Thread
 	InitTLS();
-
 }
+
 ThreadManager::~ThreadManager()
 {
 	Join();
@@ -28,7 +32,7 @@ void ThreadManager::Launch(function<void(void)> callback)
 
 void ThreadManager::Join()
 {
-	for (std::thread& t : _threads)
+	for (thread& t : _threads)
 	{
 		if (t.joinable())
 			t.join();
@@ -38,10 +42,11 @@ void ThreadManager::Join()
 
 void ThreadManager::InitTLS()
 {
-	static Atomic<uint32>SThreadID = 1;
-	 = SThreadID.fetch_add(1);
+	static Atomic<uint32> SThreadId = 1;
+	LThreadId = SThreadId.fetch_add(1);
 }
 
 void ThreadManager::DestroyTLS()
 {
+
 }

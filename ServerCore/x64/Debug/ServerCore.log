@@ -1,4 +1,9 @@
 ﻿  pch.cpp
-C:\Users\tlseh\Desktop\GameserverInfrun\ServerCore\CoreMacro.h(15,2): error C2447: '{': 함수 헤더가 없습니다. 이전 스타일의 형식 목록입니까?
-C:\Users\tlseh\Desktop\GameserverInfrun\ServerCore\CoreMacro.h(19,1): error C2059: 구문 오류: '}'
-C:\Users\tlseh\Desktop\GameserverInfrun\ServerCore\CoreMacro.h(19,1): error C2143: 구문 오류: ';'이(가) '}' 앞에 없습니다.
+  CoreGlobal.cpp
+  CorePch.cpp
+  CoreTLS.cpp
+  DeadLockProfiler.cpp
+  Lock.cpp
+  ThreadManager.cpp
+  코드를 생성하고 있습니다...
+LINK : fatal error LNK1104: 'C:\Users\tlseh\Desktop\GameserverInfrun\Libraries\Debug\ServerCore.lib' 파일을 열 수 없습니다.
