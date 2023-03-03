@@ -11,7 +11,7 @@ public:
 
 	int32 GetRefCount() { return _refCount; }
 
-	int32 AddRef() { return ++_refCount; }
+	int32 AddRef() { return ++_refCount; } // 
 
 	int32 ReleaseRef()
 	{

@@ -1,9 +1,13 @@
 ﻿  pch.cpp
+  Allocator.cpp
   CoreGlobal.cpp
   CorePch.cpp
   CoreTLS.cpp
   DeadLockProfiler.cpp
   Lock.cpp
+  Memory.cpp
+  MemoryPool.cpp
+  RefCounting.cpp
   ThreadManager.cpp
   코드를 생성하고 있습니다...
-LINK : fatal error LNK1104: 'C:\Users\tlseh\Desktop\GameserverInfrun\Libraries\Debug\ServerCore.lib' 파일을 열 수 없습니다.
+  ServerCore.vcxproj -> C:\Users\tlseh\Desktop\GameserverInfrun\Libraries\Debug\ServerCore.lib
