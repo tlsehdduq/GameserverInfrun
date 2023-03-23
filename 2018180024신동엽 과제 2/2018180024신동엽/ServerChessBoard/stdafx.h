@@ -14,6 +14,7 @@
 #include <memory.h>
 #include <tchar.h>
 #include <iostream>
+#include<unordered_map>
 
 #include <WS2tcpip.h>
 #pragma comment (lib, "WS2_32.LIB")
@@ -24,6 +25,7 @@
 using namespace std;
 
 const int BUFSIZE = 256;
+#define SERVERPORT 7777
 
 extern int Dis;
 

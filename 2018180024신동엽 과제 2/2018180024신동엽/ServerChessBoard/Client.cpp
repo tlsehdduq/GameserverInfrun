@@ -5,13 +5,14 @@ void Client::ConnectServer(const char* address)
 	wcout.imbue(locale("korean"));
 	WSADATA WSAData;
 	WSAStartup(MAKEWORD(2, 0), &WSAData);
-	clientSocket = WSASocket(AF_INET, SOCK_STREAM, IPPROTO_TCP, 0, 0, 0);
+	clientSocket = WSASocket(AF_INET, SOCK_STREAM, IPPROTO_TCP, 0, 0, WSA_FLAG_OVERLAPPED);
 	SOCKADDR_IN server_addr;
 	ZeroMemory(&server_addr, sizeof(server_addr));
 	server_addr.sin_family = AF_INET;
 	server_addr.sin_port = htons(SERVER_PORT);
 	inet_pton(AF_INET, address, &server_addr.sin_addr);
 	connect(clientSocket, reinterpret_cast<sockaddr*>(&server_addr), sizeof(server_addr));
+
 }
 
 void Client::SendData(char key)
@@ -44,9 +45,23 @@ void Client::RecvData(Player& playerInfo)
 	int y = 0;
 	::memcpy(&x, mybuf.buf, 4);
 	::memcpy(&y, mybuf.buf + 4, 4);
+
+	_buf.buf = mybuf.buf;
+	_buf.len = mybuf.len;
+
 	playerInfo.setPosX(x);
 	playerInfo.setPosY(y);
-	cout << "X : " << playerInfo.getPosX() << " Y : " << playerInfo.getPosY();
+
+	cout << " RECV X : " << playerInfo.getPosX() << " Y : " << playerInfo.getPosY() << endl;
+
+}
+
+void Client::recv_callback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED over, DWORD flags)
+{
+}
+
+void Client::send_callback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED over, DWORD flags)
+{
 
 }
 

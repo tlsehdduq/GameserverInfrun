@@ -30,7 +30,61 @@ int Pheight = 60;
 char moveDir;
 
 Player Knight(Px,Py,Pwidth,Pheight);
+
 Client client;
+
+SOCKET clientSocket;
+
+WSABUF mybuf_r;
+char recv_buf[BUFSIZE];
+
+WSABUF s_wsabuf;
+char send_buf[BUFSIZE];
+
+void CALLBACK send_callback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED send_over, DWORD recv_flag);
+void CALLBACK recv_callback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED recv_over, DWORD recv_flag);
+
+void do_send(char key)
+{
+    char send_data[1];
+    send_data[0] = key;
+    DWORD sent_byte;
+
+    WSABUF mybuf;
+    //mybuf.buf = buf; mybuf.len = static_cast<ULONG>(strlen(buf)) + 1;
+    mybuf.buf = send_data;
+    mybuf.len = static_cast<ULONG>(strlen(send_data)) + 1;
+    WSAOVERLAPPED* sendoverlapped = new WSAOVERLAPPED;
+    ZeroMemory(sendoverlapped, sizeof(WSAOVERLAPPED));
+
+    WSASend(clientSocket, &mybuf, 1, &sent_byte, 0, sendoverlapped, send_callback);
+}
+void do_recv()
+{
+    mybuf_r.buf = recv_buf;      mybuf_r.len = BUFSIZE;
+    DWORD recv_flag = 0;
+    WSAOVERLAPPED* r_over = new WSAOVERLAPPED;
+    ZeroMemory(r_over, sizeof(WSAOVERLAPPED));
+    int ret = WSARecv(clientSocket, &mybuf_r, 1, 0, &recv_flag, r_over, recv_callback);
+    if (0 != ret) {
+        int err_no = WSAGetLastError();
+        if (err_no != WSA_IO_PENDING);
+        //err_display("WSARecv  : ", err_no);
+    }
+}
+
+void CALLBACK send_callback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED send_over, DWORD recv_flag)
+{
+    delete send_over;
+    return;
+}
+void CALLBACK recv_callback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED recv_over, DWORD recv_flag)
+{
+    cout << "recv _ callback " << endl;
+    delete recv_over;
+    return;
+}
+
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_opt_ HINSTANCE hPrevInstance,
@@ -138,13 +192,23 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-    char address[100];
+    char address[100] = "127.0.0.1";
     switch (message)
     {
     case WM_CREATE:
-        cout << "Input the Address : " << endl;
-        cin >> address;
-        client.ConnectServer(address);
+        wcout.imbue(locale("korean"));
+        WSADATA WSAData;
+        WSAStartup(MAKEWORD(2, 0), &WSAData);
+
+        clientSocket = WSASocket(AF_INET, SOCK_STREAM, IPPROTO_TCP, 0, 0, WSA_FLAG_OVERLAPPED);
+        SOCKADDR_IN server_addr;
+        ZeroMemory(&server_addr, sizeof(server_addr));
+        server_addr.sin_family = AF_INET;
+        server_addr.sin_port = htons(SERVERPORT);
+        inet_pton(AF_INET, address, &server_addr.sin_addr);
+        connect(clientSocket, reinterpret_cast<sockaddr*>(&server_addr), sizeof(server_addr));
+        cout << " Connect Server " << endl;
+
         break;
    
     case WM_PAINT:
@@ -152,9 +216,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         PAINTSTRUCT ps;
         HDC hdc = BeginPaint(hWnd, &ps);
 
-        Knight.Update();
-
-  
         HDC hdcMem = CreateCompatibleDC(hdc);
         SelectObject(hdcMem, hBmp);
         BitBlt(hdc, 0, 0, 800, 800, hdcMem, 0, 0, SRCCOPY);
@@ -173,23 +234,19 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         switch (wParam) {
         case VK_LEFT:
             moveDir = 'a';
-            client.SendData(moveDir);
-            client.RecvData(Knight);
+            do_send(moveDir);
             break;
         case VK_RIGHT:
             moveDir = 'd';
-            client.SendData(moveDir);
-            client.RecvData(Knight);
+            do_send(moveDir);
             break;
         case VK_UP:
             moveDir = 'w';
-            client.SendData(moveDir);
-            client.RecvData(Knight);
+            do_send(moveDir);
             break;
         case VK_DOWN:
             moveDir = 's';
-            client.SendData(moveDir);
-            client.RecvData(Knight);
+            do_send(moveDir);
             break;
         default:
             break;
