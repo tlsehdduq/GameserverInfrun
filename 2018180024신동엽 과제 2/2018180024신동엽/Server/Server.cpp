@@ -18,6 +18,7 @@ void CALLBACK send_callback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED send_ove
 void CALLBACK recv_callback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED recv_over, DWORD recv_flag);
 
 
+
 class SESSION {
 
 private:
@@ -57,10 +58,12 @@ public:
 	}
 
 	void do_recv() {
+
 		DWORD recv_flag = 0;
 		ZeroMemory(&_recv_over, sizeof(_recv_over)); // 리시브를 하기 위해선 다시 초기화 , Overlapped 재사용 ! 
 		_recv_over.hEvent = reinterpret_cast<HANDLE>(_id);
 		WSARecv(_socket, &_recv_wsabuf, 1, 0, &recv_flag, &_recv_over, recv_callback); // accept를 했으면 recv를 해야하는데 우리의 recv는 overlapped 
+		SleepEx(10, TRUE);
 		// callback에는 정보가 필요하다 -> recv_callback
 		cout << _recv_wsabuf.buf[0] << endl;
 
@@ -68,30 +71,56 @@ public:
 	}
 
 	void do_send(int num_bytes) {
-		ZeroMemory(&_recv_over, sizeof(_recv_over)); // 콜백을 재사용해야하기 때문에 0으로 초기화  overlapped 재사용 ! 
+		//ZeroMemory(&_recv_over, sizeof(_recv_over)); // 콜백을 재사용해야하기 때문에 0으로 초기화  overlapped 재사용 ! 
 		_recv_over.hEvent = reinterpret_cast<HANDLE>(_id);
 		char send_buf[BUFSIZE];
-		::memcpy(send_buf, &posX, 4);
-		::memcpy(send_buf + 4, &posY, 4);
+		::memcpy(send_buf , &posX, 4);
+		::memcpy(send_buf+4, &posY, 4);
 		_send_wsabuf.buf = send_buf;
 		_send_wsabuf.len = num_bytes;
-		WSASend(_socket, &_send_wsabuf, 1, 0, 0, &_recv_over, send_callback);
+		int senderr = WSASend(_socket, &_send_wsabuf, 1, 0, 0, &_recv_over, send_callback);
+		if (senderr != 0) {
+			int err_no = WSAGetLastError();
+			cout << " err _ no" << err_no << endl;
+		}
+		SleepEx(10,TRUE);
 	}
 };
 
+
 unordered_map <int, SESSION> clients;
+
+
 
 void CALLBACK send_callback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED send_over, DWORD recv_flag)
 {
 	int s_id = reinterpret_cast<int>(send_over->hEvent);
-	clients[s_id].do_recv();
+	cout << " -- " << char(clients[s_id]._recv_buf[0]) << endl;
 }
 void CALLBACK recv_callback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED recv_over, DWORD recv_flag)
 {
 
 	int s_id = reinterpret_cast<int>(recv_over->hEvent); // cast를 통해서 어떤 소캣인지 끄집어 냄
-	cout << "Client Sent [" << num_bytes << "bytes] : " << clients[s_id]._recv_buf << endl;
+
 	
+	if (clients[s_id]._recv_buf[0] == 'w')
+	{
+		clients[s_id].posY += 78;
+	}
+	if (clients[s_id]._recv_buf[0] == 's')
+	{
+		clients[s_id].posY -= 78;
+	}
+	if (clients[s_id]._recv_buf[0] == 'a')
+	{
+		clients[s_id].posX -= 78;
+	}
+	if (clients[s_id]._recv_buf[0] == 'd')
+	{
+		clients[s_id].posX += 78;
+	}
+
+
 	clients[s_id].do_send(num_bytes); 
 	// 클라이언트가 보내려는 그 양만큼 보내야한다. ***
 	//// callback함수는 하나만 두고 여러 소캣이 이 하나의 함수를 이용한다. 
@@ -138,6 +167,7 @@ int main()
 
 	INT addr_size = sizeof(server_addr);
 
+
 	for (int i = 1; ; ++i) {
 
 		SOCKET c_socket = WSAAccept(serverSocket, reinterpret_cast<sockaddr*>(&server_addr), &addr_size, 0, 0);
@@ -145,7 +175,6 @@ int main()
 			cout << " Connect  Client " << endl;
 		clients.try_emplace(i, i, c_socket);
 		clients[i].do_recv();
-	
 
 		//char recv_buf[BUFSIZE];
 

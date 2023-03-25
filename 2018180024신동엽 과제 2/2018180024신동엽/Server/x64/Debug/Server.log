@@ -1,8 +1,8 @@
 ﻿  Server.cpp
-C:\Users\tlseh\Desktop\GameserverInfrun\2018180024신동엽 과제 2\2018180024신동엽\Server\Server.cpp(52,1): warning C4312: 'reinterpret_cast': 'int'에서 더 큰 'HANDLE'(으)로의 변환입니다.
-C:\Users\tlseh\Desktop\GameserverInfrun\2018180024신동엽 과제 2\2018180024신동엽\Server\Server.cpp(62,1): warning C4312: 'reinterpret_cast': 'int'에서 더 큰 'HANDLE'(으)로의 변환입니다.
-C:\Users\tlseh\Desktop\GameserverInfrun\2018180024신동엽 과제 2\2018180024신동엽\Server\Server.cpp(76,52): warning C4311: 'reinterpret_cast': 'HANDLE'에서 'int'(으)로 포인터가 잘립니다.
-C:\Users\tlseh\Desktop\GameserverInfrun\2018180024신동엽 과제 2\2018180024신동엽\Server\Server.cpp(76,52): warning C4302: 'reinterpret_cast': 'HANDLE'에서 'int'(으)로 잘립니다.
-C:\Users\tlseh\Desktop\GameserverInfrun\2018180024신동엽 과제 2\2018180024신동엽\Server\Server.cpp(82,52): warning C4311: 'reinterpret_cast': 'HANDLE'에서 'int'(으)로 포인터가 잘립니다.
-C:\Users\tlseh\Desktop\GameserverInfrun\2018180024신동엽 과제 2\2018180024신동엽\Server\Server.cpp(82,52): warning C4302: 'reinterpret_cast': 'HANDLE'에서 'int'(으)로 잘립니다.
+C:\Users\tlseh\Desktop\GameserverInfrun\2018180024신동엽 과제 2\2018180024신동엽\Server\Server.cpp(64,1): warning C4312: 'reinterpret_cast': 'int'에서 더 큰 'HANDLE'(으)로의 변환입니다.
+C:\Users\tlseh\Desktop\GameserverInfrun\2018180024신동엽 과제 2\2018180024신동엽\Server\Server.cpp(75,1): warning C4312: 'reinterpret_cast': 'int'에서 더 큰 'HANDLE'(으)로의 변환입니다.
+C:\Users\tlseh\Desktop\GameserverInfrun\2018180024신동엽 과제 2\2018180024신동엽\Server\Server.cpp(97,52): warning C4311: 'reinterpret_cast': 'HANDLE'에서 'int'(으)로 포인터가 잘립니다.
+C:\Users\tlseh\Desktop\GameserverInfrun\2018180024신동엽 과제 2\2018180024신동엽\Server\Server.cpp(97,52): warning C4302: 'reinterpret_cast': 'HANDLE'에서 'int'(으)로 잘립니다.
+C:\Users\tlseh\Desktop\GameserverInfrun\2018180024신동엽 과제 2\2018180024신동엽\Server\Server.cpp(103,52): warning C4311: 'reinterpret_cast': 'HANDLE'에서 'int'(으)로 포인터가 잘립니다.
+C:\Users\tlseh\Desktop\GameserverInfrun\2018180024신동엽 과제 2\2018180024신동엽\Server\Server.cpp(103,52): warning C4302: 'reinterpret_cast': 'HANDLE'에서 'int'(으)로 잘립니다.
   Server.vcxproj -> C:\Users\tlseh\Desktop\GameserverInfrun\2018180024신동엽 과제 2\2018180024신동엽\x64\Debug\Server.exe

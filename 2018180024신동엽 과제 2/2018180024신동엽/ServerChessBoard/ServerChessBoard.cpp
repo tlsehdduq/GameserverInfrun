@@ -27,6 +27,12 @@ int Py = 0;
 int Pwidth = 60;
 int Pheight = 60;
 
+struct myOverlapped
+{
+    WSAOVERLAPPED myoverlapped;
+    WSABUF mywbuf;
+};
+
 char moveDir;
 
 Player Knight(Px,Py,Pwidth,Pheight);
@@ -44,7 +50,7 @@ char send_buf[BUFSIZE];
 void CALLBACK send_callback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED send_over, DWORD recv_flag);
 void CALLBACK recv_callback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED recv_over, DWORD recv_flag);
 
-void do_send(char key)
+void do_Send(char key)
 {
     char send_data[1];
     send_data[0] = key;
@@ -58,10 +64,17 @@ void do_send(char key)
     ZeroMemory(sendoverlapped, sizeof(WSAOVERLAPPED));
 
     WSASend(clientSocket, &mybuf, 1, &sent_byte, 0, sendoverlapped, send_callback);
+    SleepEx(100, true);
 }
-void do_recv()
+
+void do_Recv(Player& playerInfo)
 {
-    mybuf_r.buf = recv_buf;      mybuf_r.len = BUFSIZE;
+    //char recv_data[BUFSIZE];
+    //WSABUF mybuf;
+
+    //mybuf.buf = recv_data;
+    //mybuf.len = BUFSIZE;
+
     DWORD recv_flag = 0;
     WSAOVERLAPPED* r_over = new WSAOVERLAPPED;
     ZeroMemory(r_over, sizeof(WSAOVERLAPPED));
@@ -71,19 +84,37 @@ void do_recv()
         if (err_no != WSA_IO_PENDING);
         //err_display("WSARecv  : ", err_no);
     }
+
+    //mybuf_r.buf = mybuf.buf;
+    //mybuf_r.len = mybuf.len;
+
+
+  
 }
 
 void CALLBACK send_callback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED send_over, DWORD recv_flag)
 {
+
     delete send_over;
     return;
 }
 void CALLBACK recv_callback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED recv_over, DWORD recv_flag)
 {
-    cout << "recv _ callback " << endl;
+    myOverlapped* overlapped = (myOverlapped*)recv_over;
+    overlapped->mywbuf.buf = mybuf_r.buf;
+    overlapped->mywbuf.len = mybuf_r.len;
+
+
+    int x = int(overlapped->mywbuf.buf[0]);
+    int y = int(overlapped->mywbuf.buf[1]);
+    Knight.setPosX(x);
+    Knight.setPosY(y);
+    cout << " RECV X : " << Knight.getPosX() << " Y : " << Knight.getPosY() << endl;
+    //cout << "recv _ callback  X: " << x << "  Y : "<< y << endl;
     delete recv_over;
     return;
 }
+
 
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
@@ -234,19 +265,23 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         switch (wParam) {
         case VK_LEFT:
             moveDir = 'a';
-            do_send(moveDir);
+            do_Send(moveDir);
+            do_Recv(Knight);
             break;
         case VK_RIGHT:
             moveDir = 'd';
-            do_send(moveDir);
+            do_Send(moveDir);
+            do_Recv(Knight);
             break;
         case VK_UP:
             moveDir = 'w';
-            do_send(moveDir);
+            do_Send(moveDir);
+            do_Recv(Knight);
             break;
         case VK_DOWN:
             moveDir = 's';
-            do_send(moveDir);
+            do_Send(moveDir);
+            do_Recv(Knight);
             break;
         default:
             break;
